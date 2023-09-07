@@ -1,5 +1,5 @@
 from ..models.film_model import Film
-from app.models.exceptions import FilmNotFound
+from app.models.exceptions import FilmNotFound, InvalidDataError
 from flask import request
 
 from decimal import Decimal 
@@ -16,7 +16,7 @@ class FilmController:
         if result is not None:
             return result.serialize(), 200
         else:
-            raise FilmNotFound()
+            raise FilmNotFound(film_id)
             
         
         
@@ -33,7 +33,32 @@ class FilmController:
     def create(cls):
         """Create a new film"""
         data = request.json
+        #ejercicio2
         # TODO: Validate data
+        if len(data['title']) <= 3:
+            raise InvalidDataError('El título debe tener más de 3 caracteres')
+        if not isinstance(data.get('language_id'), int):
+            raise InvalidDataError('language_id debe ser un número entero')
+
+        if not isinstance(data.get('rental_duration'), int):
+            raise InvalidDataError('rental_duration debe ser un número entero')
+
+        if not isinstance(data.get('rental_rate'), int):
+            raise InvalidDataError('rental_rate debe ser un número entero')
+
+        if not isinstance(data.get('replacement_cost'), int):
+            raise InvalidDataError('replacement_cost debe ser un número entero')
+
+        valid_special_features = [
+            'Trailers',
+            'Commentaries',
+            'Deleted Scenes',
+            'Behind the Scenes'
+        ]
+        special_features = data.get('special_features', [])
+        if not isinstance(special_features, list) or not all(feature in valid_special_features for feature in special_features):
+            raise InvalidDataError('special_features debe ser una lista de cadenas válidas')
+        #fin codigo ejercicio2
         if data.get('rental_rate') is not None:
             if isinstance(data.get('rental_rate'), int):
                 data['rental_rate'] = Decimal(data.get('rental_rate'))/100
