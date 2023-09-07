@@ -102,20 +102,28 @@ class FilmController:
         data['film_id'] = film_id
 
         film = Film(**data)
-        print(film)
-        # TODO: Validate film exists
         #ejercicio 3
-        #if not film.exists():
-         #   raise FilmNotFound("Película no encontrada")
+        # TODO: Validate film exists
+        result = Film.get(film)
+        if not result:
+            raise FilmNotFound("Película no encontrada")
+       
         #fin ejercicio 3
         Film.update(film)
         return {'message': 'Film updated successfully'}, 200
+       
     
     @classmethod
     def delete(cls, film_id):
         """Delete a film"""
         film = Film(film_id=film_id)
-
+        #ejercicio 5
         # TODO: Validate film exists
+        result = Film.get(film)
+        if not result:
+            raise FilmNotFound("Película no encontrada")
+       
+        #fin ejercicio 5
+        
         Film.delete(film)
         return {'message': 'Film deleted successfully'}, 204
