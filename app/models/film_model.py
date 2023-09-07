@@ -74,7 +74,12 @@ class Film:
         if result is not None:
             return cls(*result)
         return None
+    #ejercicio 3
     
+    def exists(self):
+        """Check if the film ID exists in the database"""
+        return Film.get(self) is not None
+    #fin ejercicio3
     @classmethod
     def get_all(cls):
         """Get all films

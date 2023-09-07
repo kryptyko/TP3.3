@@ -76,6 +76,21 @@ class FilmController:
         """Update a film"""
         data = request.json
         # TODO: Validate data
+        #Ejercicio4
+        if len(data['title']) <= 3:
+            raise InvalidDataError('El título debe tener más de 3 caracteres')
+        if not isinstance(data.get('language_id'), int):
+            raise InvalidDataError('language_id debe ser un número entero')
+
+        if not isinstance(data.get('rental_duration'), int):
+            raise InvalidDataError('rental_duration debe ser un número entero')
+
+        if not isinstance(data.get('rental_rate'), int):
+            raise InvalidDataError('rental_rate debe ser un número entero')
+
+        if not isinstance(data.get('replacement_cost'), int):
+            raise InvalidDataError('replacement_cost debe ser un número entero')
+        #Fin ejercicio 4
         if data.get('rental_rate') is not None:
             if isinstance(data.get('rental_rate'), int):
                 data['rental_rate'] = Decimal(data.get('rental_rate'))/100
@@ -87,8 +102,12 @@ class FilmController:
         data['film_id'] = film_id
 
         film = Film(**data)
-
+        print(film)
         # TODO: Validate film exists
+        #ejercicio 3
+        #if not film.exists():
+         #   raise FilmNotFound("Película no encontrada")
+        #fin ejercicio 3
         Film.update(film)
         return {'message': 'Film updated successfully'}, 200
     
